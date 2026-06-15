@@ -1,7 +1,7 @@
 const fs = require("fs");
 const assert = require("assert");
 
-const html = fs.readFileSync("index.html", "utf8");
+const html = fs.readFileSync("tester.html", "utf8");
 
 function includes(text, message) {
   assert(html.includes(text), message);

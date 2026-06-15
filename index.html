@@ -3,20 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>API Tester</title>
+    <title>FeathEr</title>
     <style>
       :root {
         color-scheme: light;
         --bg: #f6f8fb;
         --panel: #ffffff;
         --text: #172033;
-        --muted: #687389;
+        --muted: #667085;
         --line: #d9e0ea;
         --accent: #2563eb;
         --accent-dark: #1d4ed8;
-        --danger: #b42318;
-        --ok: #067647;
-        --code: #101828;
       }
 
       * {
@@ -26,496 +23,64 @@
       body {
         margin: 0;
         min-height: 100vh;
+        display: grid;
+        place-items: center;
         background: var(--bg);
         color: var(--text);
         font-family: Arial, "Microsoft YaHei", sans-serif;
       }
 
-      button,
-      input,
-      select,
-      textarea {
-        font: inherit;
-      }
-
-      .app-shell {
-        width: min(1180px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 28px 0 36px;
-      }
-
-      .topbar {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 18px;
+      main {
+        width: min(680px, calc(100% - 32px));
+        padding: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
       }
 
       h1 {
         margin: 0;
-        font-size: 28px;
-        line-height: 1.2;
+        font-size: 36px;
+        line-height: 1.15;
         letter-spacing: 0;
       }
 
-      .subtitle {
-        margin: 8px 0 0;
+      p {
+        margin: 14px 0 0;
         color: var(--muted);
-        font-size: 14px;
-      }
-
-      .layout {
-        display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-        gap: 16px;
-        align-items: start;
-      }
-
-      .panel {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 18px;
-      }
-
-      .field {
-        display: grid;
-        gap: 8px;
-        margin-bottom: 14px;
-      }
-
-      label {
-        color: #344054;
-        font-size: 13px;
-        font-weight: 700;
-      }
-
-      input,
-      select,
-      textarea {
-        width: 100%;
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        background: #ffffff;
-        color: var(--text);
-        outline: none;
-      }
-
-      input,
-      select {
-        min-height: 42px;
-        padding: 0 12px;
-      }
-
-      textarea {
-        min-height: 118px;
-        resize: vertical;
-        padding: 12px;
-        font-family: Consolas, "Courier New", monospace;
-        font-size: 13px;
-        line-height: 1.5;
-      }
-
-      input:focus,
-      select:focus,
-      textarea:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-      }
-
-      .request-line {
-        display: grid;
-        grid-template-columns: 132px minmax(0, 1fr);
-        gap: 10px;
+        font-size: 16px;
+        line-height: 1.65;
       }
 
       .actions {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        margin-top: 4px;
+        margin-top: 28px;
       }
 
-      .primary {
-        min-height: 42px;
-        border: 0;
+      a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 20px;
         border-radius: 6px;
-        padding: 0 18px;
         background: var(--accent);
         color: #ffffff;
-        cursor: pointer;
+        text-decoration: none;
         font-weight: 700;
       }
 
-      .primary:hover {
+      a:hover {
         background: var(--accent-dark);
-      }
-
-      .primary:disabled {
-        cursor: wait;
-        opacity: 0.7;
-      }
-
-      .secondary {
-        min-height: 42px;
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        padding: 0 14px;
-        background: #ffffff;
-        color: var(--text);
-        cursor: pointer;
-      }
-
-      .hint {
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.5;
-      }
-
-      .proxy-box {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 14px;
-        background: #fbfcfe;
-      }
-
-      .check-row {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        color: #344054;
-        font-size: 13px;
-        font-weight: 700;
-      }
-
-      .check-row input {
-        width: 16px;
-        min-height: 16px;
-      }
-
-      .summary {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-
-      .metric {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 12px;
-        background: #fbfcfe;
-      }
-
-      .metric span {
-        display: block;
-        color: var(--muted);
-        font-size: 12px;
-        margin-bottom: 6px;
-      }
-
-      .metric strong {
-        font-size: 18px;
-      }
-
-      .success {
-        color: var(--ok);
-      }
-
-      .failure {
-        color: var(--danger);
-      }
-
-      pre {
-        min-height: 220px;
-        max-height: 520px;
-        overflow: auto;
-        margin: 0;
-        padding: 14px;
-        border-radius: 8px;
-        background: var(--code);
-        color: #e4e7ec;
-        font-family: Consolas, "Courier New", monospace;
-        font-size: 13px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-
-      .tabs {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 10px;
-      }
-
-      .tab {
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 7px 12px;
-        background: #ffffff;
-        color: var(--muted);
-        cursor: pointer;
-        font-size: 13px;
-      }
-
-      .tab.active {
-        border-color: var(--accent);
-        color: var(--accent);
-        font-weight: 700;
-      }
-
-      .error {
-        margin-top: 12px;
-        border: 1px solid #fecdca;
-        border-radius: 8px;
-        padding: 12px;
-        background: #fffbfa;
-        color: var(--danger);
-        font-size: 13px;
-        line-height: 1.5;
-      }
-
-      @media (max-width: 860px) {
-        .layout,
-        .request-line,
-        .summary {
-          grid-template-columns: 1fr;
-        }
-
-        .topbar {
-          align-items: flex-start;
-          flex-direction: column;
-        }
       }
     </style>
   </head>
   <body>
-    <div id="app">
-      <main class="app-shell">
-        <header class="topbar">
-          <div>
-            <h1>API Tester</h1>
-            <p class="subtitle">输入任意接口 URL 和参数，从你的浏览器直接发送请求并查看结果。</p>
-          </div>
-          <p class="hint">如果目标接口未允许跨域访问，浏览器会拦截请求并显示 CORS 错误。</p>
-        </header>
-
-        <section class="layout">
-          <form class="panel" @submit.prevent="sendRequest">
-            <div class="field">
-              <label for="request-url">请求地址</label>
-              <div class="request-line">
-                <select id="request-method" v-model="method">
-                  <option v-for="item in methods" :key="item" :value="item">{{ item }}</option>
-                </select>
-                <input id="request-url" v-model.trim="url" type="url" placeholder="https://api.example.com/health" required>
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="request-headers">Headers JSON</label>
-              <textarea id="request-headers" v-model="headersText" spellcheck="false" placeholder='{"Content-Type":"application/json"}'></textarea>
-            </div>
-
-            <div class="field">
-              <label for="request-body">Body</label>
-              <textarea id="request-body" v-model="bodyText" spellcheck="false" placeholder='{"name":"demo"}'></textarea>
-            </div>
-
-            <div class="proxy-box">
-              <label class="check-row" for="use-proxy">
-                <input id="use-proxy" v-model="useProxy" type="checkbox">
-                使用白名单代理服务器
-              </label>
-              <div class="field" v-if="useProxy" style="margin-top: 12px; margin-bottom: 0;">
-                <label for="proxy-url">代理地址</label>
-                <input id="proxy-url" v-model.trim="proxyUrl" type="url" placeholder="https://your-worker.workers.dev/proxy">
-              </div>
-              <p class="hint">代理模式会把请求发到你的 Worker，再由 Worker 访问白名单里的目标域名。</p>
-            </div>
-
-            <div class="actions">
-              <button id="send-request" class="primary" type="submit" :disabled="loading">
-                {{ loading ? "请求中..." : "发送请求" }}
-              </button>
-              <button class="secondary" type="button" @click="resetForm">重置</button>
-            </div>
-
-            <p class="hint">提示：GET 和 HEAD 请求不会发送 Body。请勿在公共电脑上输入敏感 token。</p>
-            <div v-if="error" class="error">{{ error }}</div>
-          </form>
-
-          <section class="panel">
-            <div class="summary">
-              <div class="metric">
-                <span>状态码</span>
-                <strong id="response-status" :class="statusClass">{{ statusText }}</strong>
-              </div>
-              <div class="metric">
-                <span>耗时</span>
-                <strong id="response-time">{{ durationText }}</strong>
-              </div>
-              <div class="metric">
-                <span>结果</span>
-                <strong :class="resultClass">{{ resultText }}</strong>
-              </div>
-            </div>
-
-            <div class="tabs">
-              <button class="tab" :class="{ active: activeTab === 'body' }" type="button" @click="activeTab = 'body'">响应正文</button>
-              <button class="tab" :class="{ active: activeTab === 'headers' }" type="button" @click="activeTab = 'headers'">响应头</button>
-            </div>
-
-            <pre id="response-body" v-if="activeTab === 'body'">{{ responseBody || "等待请求结果..." }}</pre>
-            <pre v-else>{{ responseHeaders || "等待响应头..." }}</pre>
-          </section>
-        </section>
-      </main>
-    </div>
-
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <script>
-      Vue.createApp({
-        data() {
-          return {
-            methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
-            method: "GET",
-            url: "",
-            headersText: "{\n  \"Accept\": \"application/json\"\n}",
-            bodyText: "",
-            useProxy: false,
-            proxyUrl: "",
-            loading: false,
-            error: "",
-            status: "",
-            duration: "",
-            responseBody: "",
-            responseHeaders: "",
-            activeTab: "body",
-          };
-        },
-        computed: {
-          statusText() {
-            return this.status || "-";
-          },
-          durationText() {
-            return this.duration ? `${this.duration} ms` : "-";
-          },
-          resultText() {
-            if (!this.status) return "-";
-            return this.status >= 200 && this.status < 400 ? "通过" : "失败";
-          },
-          statusClass() {
-            if (!this.status) return "";
-            return this.status >= 200 && this.status < 400 ? "success" : "failure";
-          },
-          resultClass() {
-            return this.resultText === "通过" ? "success" : this.resultText === "失败" ? "failure" : "";
-          },
-        },
-        methods: {
-          parseHeaders() {
-            if (!this.headersText.trim()) return {};
-            const parsed = JSON.parse(this.headersText);
-            if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") {
-              throw new Error("Headers 必须是 JSON 对象。");
-            }
-            return parsed;
-          },
-          formatBody(text) {
-            if (!text) return "";
-            try {
-              return JSON.stringify(JSON.parse(text), null, 2);
-            } catch (_) {
-              return text;
-            }
-          },
-          formatHeaders(headers) {
-            const result = {};
-            headers.forEach((value, key) => {
-              result[key] = value;
-            });
-            return JSON.stringify(result, null, 2);
-          },
-          buildProxyPayload(headers) {
-            return {
-              url: this.url,
-              method: this.method,
-              headers,
-              body: ["GET", "HEAD"].includes(this.method) ? "" : this.bodyText,
-            };
-          },
-          async sendRequest() {
-            this.error = "";
-            this.status = "";
-            this.duration = "";
-            this.responseBody = "";
-            this.responseHeaders = "";
-            this.activeTab = "body";
-
-            let headers;
-            try {
-              headers = this.parseHeaders();
-            } catch (err) {
-              this.error = err.message || "Headers JSON 格式错误。";
-              return;
-            }
-
-            let requestUrl = this.url;
-            const options = {
-              method: this.method,
-              headers,
-            };
-
-            if (this.useProxy) {
-              if (!this.proxyUrl) {
-                this.error = "请先填写代理地址。";
-                return;
-              }
-              requestUrl = this.proxyUrl;
-              options.method = "POST";
-              options.headers = { "Content-Type": "application/json" };
-              options.body = JSON.stringify(this.buildProxyPayload(headers));
-            } else if (!["GET", "HEAD"].includes(this.method) && this.bodyText.trim()) {
-              options.body = this.bodyText;
-            }
-
-            this.loading = true;
-            const startedAt = performance.now();
-
-            try {
-              const response = await fetch(requestUrl, options);
-              const text = await response.text();
-              this.status = response.status;
-              this.duration = Math.round(performance.now() - startedAt);
-              this.responseHeaders = this.formatHeaders(response.headers);
-              this.responseBody = this.formatBody(text);
-            } catch (err) {
-              this.duration = Math.round(performance.now() - startedAt);
-              this.error = `${err.message || "请求失败"}。如果接口在浏览器中被拦截，请检查目标服务是否允许来自本网页的 CORS 跨域请求。`;
-              this.responseBody = this.error;
-            } finally {
-              this.loading = false;
-            }
-          },
-          resetForm() {
-            this.method = "GET";
-            this.url = "";
-            this.headersText = "{\n  \"Accept\": \"application/json\"\n}";
-            this.bodyText = "";
-            this.useProxy = false;
-            this.proxyUrl = "";
-            this.error = "";
-            this.status = "";
-            this.duration = "";
-            this.responseBody = "";
-            this.responseHeaders = "";
-            this.activeTab = "body";
-          },
-        },
-      }).mount("#app");
-    </script>
+    <main>
+      <h1>FeathEr</h1>
+      <p>一个轻量的在线工具集合。当前提供接口测试能力，可填写 URL、Headers 和 Body，查看状态码、耗时与响应内容。</p>
+      <div class="actions">
+        <a href="tester.html">接口测试</a>
+      </div>
+    </main>
   </body>
 </html>
