@@ -173,6 +173,28 @@
         line-height: 1.5;
       }
 
+      .proxy-box {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 14px;
+        background: #fbfcfe;
+      }
+
+      .check-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #344054;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .check-row input {
+        width: 16px;
+        min-height: 16px;
+      }
+
       .summary {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -275,15 +297,15 @@
         <header class="topbar">
           <div>
             <h1>API Tester</h1>
-            <p class="subtitle">输入任意接口 URL 和参数，从你的浏览器直接发送请求并查看结果。</p>
+            <p class="subtitle">杈撳叆浠绘剰鎺ュ彛 URL 鍜屽弬鏁帮紝浠庝綘鐨勬祻瑙堝櫒鐩存帴鍙戦€佽姹傚苟鏌ョ湅缁撴灉銆?/p>
           </div>
-          <p class="hint">如果目标接口未允许跨域访问，浏览器会拦截请求并显示 CORS 错误。</p>
+          <p class="hint">濡傛灉鐩爣鎺ュ彛鏈厑璁歌法鍩熻闂紝娴忚鍣ㄤ細鎷︽埅璇锋眰骞舵樉绀?CORS 閿欒銆?/p>
         </header>
 
         <section class="layout">
           <form class="panel" @submit.prevent="sendRequest">
             <div class="field">
-              <label for="request-url">请求地址</label>
+              <label for="request-url">璇锋眰鍦板潃</label>
               <div class="request-line">
                 <select id="request-method" v-model="method">
                   <option v-for="item in methods" :key="item" :value="item">{{ item }}</option>
@@ -302,40 +324,52 @@
               <textarea id="request-body" v-model="bodyText" spellcheck="false" placeholder='{"name":"demo"}'></textarea>
             </div>
 
-            <div class="actions">
-              <button id="send-request" class="primary" type="submit" :disabled="loading">
-                {{ loading ? "请求中..." : "发送请求" }}
-              </button>
-              <button class="secondary" type="button" @click="resetForm">重置</button>
+            <div class="proxy-box">
+              <label class="check-row" for="use-proxy">
+                <input id="use-proxy" v-model="useProxy" type="checkbox">
+                浣跨敤鐧藉悕鍗曚唬鐞嗘湇鍔″櫒
+              </label>
+              <div class="field" v-if="useProxy" style="margin-top: 12px; margin-bottom: 0;">
+                <label for="proxy-url">浠ｇ悊鍦板潃</label>
+                <input id="proxy-url" v-model.trim="proxyUrl" type="url" placeholder="https://your-worker.workers.dev/proxy">
+              </div>
+              <p class="hint">浠ｇ悊妯″紡浼氭妸璇锋眰鍙戝埌浣犵殑 Worker锛屽啀鐢?Worker 璁块棶鐧藉悕鍗曢噷鐨勭洰鏍囧煙鍚嶃€?/p>
             </div>
 
-            <p class="hint">提示：GET 和 HEAD 请求不会发送 Body。请勿在公共电脑上输入敏感 token。</p>
+            <div class="actions">
+              <button id="send-request" class="primary" type="submit" :disabled="loading">
+                {{ loading ? "璇锋眰涓?.." : "鍙戦€佽姹? }}
+              </button>
+              <button class="secondary" type="button" @click="resetForm">閲嶇疆</button>
+            </div>
+
+            <p class="hint">鎻愮ず锛欸ET 鍜?HEAD 璇锋眰涓嶄細鍙戦€?Body銆傝鍕垮湪鍏叡鐢佃剳涓婅緭鍏ユ晱鎰?token銆?/p>
             <div v-if="error" class="error">{{ error }}</div>
           </form>
 
           <section class="panel">
             <div class="summary">
               <div class="metric">
-                <span>状态码</span>
+                <span>鐘舵€佺爜</span>
                 <strong id="response-status" :class="statusClass">{{ statusText }}</strong>
               </div>
               <div class="metric">
-                <span>耗时</span>
+                <span>鑰楁椂</span>
                 <strong id="response-time">{{ durationText }}</strong>
               </div>
               <div class="metric">
-                <span>结果</span>
+                <span>缁撴灉</span>
                 <strong :class="resultClass">{{ resultText }}</strong>
               </div>
             </div>
 
             <div class="tabs">
-              <button class="tab" :class="{ active: activeTab === 'body' }" type="button" @click="activeTab = 'body'">响应正文</button>
-              <button class="tab" :class="{ active: activeTab === 'headers' }" type="button" @click="activeTab = 'headers'">响应头</button>
+              <button class="tab" :class="{ active: activeTab === 'body' }" type="button" @click="activeTab = 'body'">鍝嶅簲姝ｆ枃</button>
+              <button class="tab" :class="{ active: activeTab === 'headers' }" type="button" @click="activeTab = 'headers'">鍝嶅簲澶?/button>
             </div>
 
-            <pre id="response-body" v-if="activeTab === 'body'">{{ responseBody || "等待请求结果..." }}</pre>
-            <pre v-else>{{ responseHeaders || "等待响应头..." }}</pre>
+            <pre id="response-body" v-if="activeTab === 'body'">{{ responseBody || "绛夊緟璇锋眰缁撴灉..." }}</pre>
+            <pre v-else>{{ responseHeaders || "绛夊緟鍝嶅簲澶?.." }}</pre>
           </section>
         </section>
       </main>
@@ -351,6 +385,8 @@
             url: "",
             headersText: "{\n  \"Accept\": \"application/json\"\n}",
             bodyText: "",
+            useProxy: false,
+            proxyUrl: "",
             loading: false,
             error: "",
             status: "",
@@ -369,14 +405,14 @@
           },
           resultText() {
             if (!this.status) return "-";
-            return this.status >= 200 && this.status < 400 ? "通过" : "失败";
+            return this.status >= 200 && this.status < 400 ? "閫氳繃" : "澶辫触";
           },
           statusClass() {
             if (!this.status) return "";
             return this.status >= 200 && this.status < 400 ? "success" : "failure";
           },
           resultClass() {
-            return this.resultText === "通过" ? "success" : this.resultText === "失败" ? "failure" : "";
+            return this.resultText === "閫氳繃" ? "success" : this.resultText === "澶辫触" ? "failure" : "";
           },
         },
         methods: {
@@ -384,7 +420,7 @@
             if (!this.headersText.trim()) return {};
             const parsed = JSON.parse(this.headersText);
             if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") {
-              throw new Error("Headers 必须是 JSON 对象。");
+              throw new Error("Headers 蹇呴』鏄?JSON 瀵硅薄銆?);
             }
             return parsed;
           },
@@ -403,6 +439,14 @@
             });
             return JSON.stringify(result, null, 2);
           },
+          buildProxyPayload(headers) {
+            return {
+              url: this.url,
+              method: this.method,
+              headers,
+              body: ["GET", "HEAD"].includes(this.method) ? "" : this.bodyText,
+            };
+          },
           async sendRequest() {
             this.error = "";
             this.status = "";
@@ -415,16 +459,26 @@
             try {
               headers = this.parseHeaders();
             } catch (err) {
-              this.error = err.message || "Headers JSON 格式错误。";
+              this.error = err.message || "Headers JSON 鏍煎紡閿欒銆?;
               return;
             }
 
+            let requestUrl = this.url;
             const options = {
               method: this.method,
               headers,
             };
 
-            if (!["GET", "HEAD"].includes(this.method) && this.bodyText.trim()) {
+            if (this.useProxy) {
+              if (!this.proxyUrl) {
+                this.error = "璇峰厛濉啓浠ｇ悊鍦板潃銆?;
+                return;
+              }
+              requestUrl = this.proxyUrl;
+              options.method = "POST";
+              options.headers = { "Content-Type": "application/json" };
+              options.body = JSON.stringify(this.buildProxyPayload(headers));
+            } else if (!["GET", "HEAD"].includes(this.method) && this.bodyText.trim()) {
               options.body = this.bodyText;
             }
 
@@ -432,7 +486,7 @@
             const startedAt = performance.now();
 
             try {
-              const response = await fetch(this.url, options);
+              const response = await fetch(requestUrl, options);
               const text = await response.text();
               this.status = response.status;
               this.duration = Math.round(performance.now() - startedAt);
@@ -440,7 +494,7 @@
               this.responseBody = this.formatBody(text);
             } catch (err) {
               this.duration = Math.round(performance.now() - startedAt);
-              this.error = `${err.message || "请求失败"}。如果接口在浏览器中被拦截，请检查目标服务是否允许来自本网页的 CORS 跨域请求。`;
+              this.error = `${err.message || "璇锋眰澶辫触"}銆傚鏋滄帴鍙ｅ湪娴忚鍣ㄤ腑琚嫤鎴紝璇锋鏌ョ洰鏍囨湇鍔℃槸鍚﹀厑璁告潵鑷湰缃戦〉鐨?CORS 璺ㄥ煙璇锋眰銆俙;
               this.responseBody = this.error;
             } finally {
               this.loading = false;
@@ -451,6 +505,8 @@
             this.url = "";
             this.headersText = "{\n  \"Accept\": \"application/json\"\n}";
             this.bodyText = "";
+            this.useProxy = false;
+            this.proxyUrl = "";
             this.error = "";
             this.status = "";
             this.duration = "";
