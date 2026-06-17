@@ -31,7 +31,7 @@
       }
 
       main {
-        width: min(680px, calc(100% - 32px));
+        width: min(760px, calc(100% - 32px));
         padding: 42px;
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -53,6 +53,9 @@
       }
 
       .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
         margin-top: 28px;
       }
 
@@ -77,9 +80,10 @@
   <body>
     <main>
       <h1>FeathEr</h1>
-      <p>一个轻量的在线工具集合。当前提供接口测试能力，可填写 URL、Headers 和 Body，查看状态码、耗时与响应内容。</p>
+      <p>一个轻量的在线工具集合。当前提供接口测试与小规模性能观察能力，可填写 URL、Headers 和 Body，查看响应内容与基础性能指标。</p>
       <div class="actions">
         <a href="tester.html">接口测试</a>
+        <a href="performance.html">轻量性能测试</a>
       </div>
     </main>
   </body>
