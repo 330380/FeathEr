@@ -26,6 +26,20 @@ html[data-theme="dark"] {
   --shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
 }
 
+html[data-content-mode="daily"] {
+  --bg: #f3f7f1;
+  --panel-soft: #e8f3ec;
+  --accent: #0f766e;
+  --accent-dark: #0b5f59;
+}
+
+html[data-theme="dark"][data-content-mode="daily"] {
+  --bg: #141914;
+  --panel-soft: #202a22;
+  --accent: #7cc9b8;
+  --accent-dark: #a0dece;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -263,6 +277,182 @@ a {
   padding: 20px;
 }
 
+.adventure-dashboard {
+  display: grid;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.adventure-top {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(0, 1.25fr);
+  gap: 16px;
+}
+
+.adventurer-card,
+.adventure-panel,
+.attribute-card,
+.quest-card,
+.latest-log {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+}
+
+.adventurer-card {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+}
+
+.avatar-token {
+  display: grid;
+  width: 92px;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 8px;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 46px;
+  font-weight: 800;
+}
+
+.adventure-kicker {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.adventurer-card h2,
+.adventure-panel h2 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0 0;
+}
+
+.profile-stats div {
+  min-width: 0;
+}
+
+.profile-stats dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.profile-stats dd {
+  margin: 3px 0 0;
+  font-weight: 700;
+}
+
+.adventure-panel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 18px;
+}
+
+.adventure-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.latest-log {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.latest-log:hover {
+  border-color: var(--accent);
+}
+
+.latest-log span,
+.latest-log small {
+  color: var(--muted);
+}
+
+.attribute-grid,
+.quest-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.attribute-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.attribute-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.attribute-card strong,
+.quest-card strong {
+  display: block;
+  font-size: 18px;
+}
+
+.attribute-card span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.attribute-value {
+  color: var(--accent);
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.stat-bar {
+  overflow: hidden;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--panel);
+}
+
+.stat-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.quest-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.quest-card {
+  min-height: 126px;
+  padding: 16px;
+}
+
+.quest-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
 .tool-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -387,12 +577,20 @@ a {
   }
 
   .post-list,
-  .tool-grid {
+  .tool-grid,
+  .adventure-top,
+  .attribute-grid,
+  .quest-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .adventurer-card {
     grid-template-columns: 1fr;
   }
 
   .featured-card,
-  .article-view {
+  .article-view,
+  .adventure-dashboard {
     padding: 24px;
   }
 }

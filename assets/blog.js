@@ -12,12 +12,28 @@
       empty: "技术文章正在整理中。",
     },
     daily: {
-      label: "日常记录",
-      title: "一些轻一点的日常",
-      description: "这里收着不必太正式的片段、散步、想法和备忘。刷新页面后会回到技术博客。",
+      label: "日常模式",
+      title: "人生冒险日记",
+      description: "把日常当成一场轻量冒险：签到、复盘、技能树和任务表都先用模板占位，之后再慢慢填入真实内容。",
       empty: "日常片段还在路上。",
     },
   };
+
+  const dailyAttributes = [
+    { label: "智慧", name: "Wisdom", value: 72 },
+    { label: "心情", name: "Mood", value: 68 },
+    { label: "体力", name: "Energy", value: 64 },
+    { label: "财富", name: "Fortune", value: 36 },
+  ];
+
+  const dailyPortals = [
+    { title: "每日签到", detail: "记录今天是否出现，以及一个最小行动。" },
+    { title: "每日复盘", detail: "写下今天的收获、消耗和下一步。" },
+    { title: "技能树", detail: "把正在练习的能力拆成可见节点。" },
+    { title: "任务表", detail: "收纳当前阶段的小任务和推进状态。" },
+    { title: "资产管理", detail: "预留给收入、支出和资源盘点。" },
+    { title: "愿望清单", detail: "先放想做的事，等合适的时候领取。" },
+  ];
 
   const $ = (id) => document.getElementById(id);
 
@@ -130,6 +146,80 @@
     `;
   }
 
+  function renderDailyDashboard(visiblePosts) {
+    const attributes = dailyAttributes
+      .map(
+        (item) => `
+          <div class="attribute-card">
+            <div>
+              <strong>${escapeHtml(item.label)}</strong>
+              <span>${escapeHtml(item.name)}</span>
+            </div>
+            <div class="attribute-value">${item.value}</div>
+            <div class="stat-bar" aria-hidden="true">
+              <span style="width: ${item.value}%"></span>
+            </div>
+          </div>
+        `
+      )
+      .join("");
+
+    const portals = dailyPortals
+      .map(
+        (item) => `
+          <article class="quest-card">
+            <strong>${escapeHtml(item.title)}</strong>
+            <p>${escapeHtml(item.detail)}</p>
+          </article>
+        `
+      )
+      .join("");
+
+    const latestLog = visiblePosts[0]
+      ? `
+        <a class="latest-log" href="#/post/${encodeURIComponent(visiblePosts[0].slug)}">
+          <span>最新冒险日志</span>
+          <strong>${escapeHtml(visiblePosts[0].title)}</strong>
+          <small>${escapeHtml(visiblePosts[0].summary)}</small>
+        </a>
+      `
+      : '<p class="status">冒险日志模板还在整理中。</p>';
+
+    return `
+      <section class="adventure-dashboard" aria-label="人生冒险日记">
+        <div class="adventure-top">
+          <div class="adventurer-card">
+            <div class="avatar-token" aria-hidden="true">F</div>
+            <div>
+              <p class="adventure-kicker">Adventurer Profile</p>
+              <h2>Feather</h2>
+              <dl class="profile-stats">
+                <div><dt>职业</dt><dd>Developer</dd></div>
+                <div><dt>等级</dt><dd>Lv.1</dd></div>
+                <div><dt>称号</dt><dd>编程游侠</dd></div>
+                <div><dt>状态</dt><dd>Normal</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="adventure-panel">
+            <p class="adventure-kicker">System Message</p>
+            <h2>欢迎来到你的人生游戏系统</h2>
+            <p>这里不会发布模板里的真实记录，只保留仪表盘结构。你之后可以把签到、复盘、任务和愿望逐步替换成自己的内容。</p>
+            ${latestLog}
+          </div>
+        </div>
+
+        <div class="attribute-grid">
+          ${attributes}
+        </div>
+
+        <div class="quest-grid">
+          ${portals}
+        </div>
+      </section>
+    `;
+  }
+
   function syncModeCopy() {
     const modeCopy = copy[currentMode];
     const modeLabel = $("mode-label");
@@ -155,11 +245,25 @@
       postView.hidden = true;
       postView.innerHTML = "";
     }
+    const sectionHeading = blogHome ? blogHome.querySelector(".section-heading") : null;
+    const sectionTitle = sectionHeading ? sectionHeading.querySelector("h2") : null;
+    const sectionDescription = sectionHeading ? sectionHeading.querySelector("p") : null;
+    if (sectionTitle) {
+      sectionTitle.textContent = currentMode === "daily" ? "冒险日志" : "最新文章";
+    }
+    if (sectionDescription) {
+      sectionDescription.textContent =
+        currentMode === "daily"
+          ? "这里继续使用安全占位文章，不读取也不发布模板导出的真实日记。"
+          : "默认展示技术博客。隐藏模式只在当前页面会话中生效。";
+    }
     if (featuredPost) {
-      featuredPost.innerHTML = visiblePosts[0] ? postCard(visiblePosts[0], true) : "";
+      featuredPost.innerHTML =
+        currentMode === "daily" ? renderDailyDashboard(visiblePosts) : visiblePosts[0] ? postCard(visiblePosts[0], true) : "";
     }
     if (postList) {
-      postList.innerHTML = visiblePosts.slice(1).map((post) => postCard(post, false)).join("");
+      const listedPosts = currentMode === "daily" ? visiblePosts : visiblePosts.slice(1);
+      postList.innerHTML = listedPosts.map((post) => postCard(post, false)).join("");
     }
     if (statusMessage) {
       statusMessage.textContent = visiblePosts.length ? "" : copy[currentMode].empty;
