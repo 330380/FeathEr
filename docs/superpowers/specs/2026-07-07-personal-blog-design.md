@@ -1,48 +1,48 @@
-# Feather Personal Blog Design
+# Feather 个人博客设计
 
-## Goal
+## 目标
 
-Convert FeathEr from a small tool landing page into Feather's personal blog. The public default experience is a technical blog. A hidden, temporary interaction switches the same page into a daily-life mode.
+将 FeathEr 从一个轻量工具入口页改造成 Feather 的个人博客。公开默认体验是技术博客；通过一个隐藏的临时交互，可以把同一个页面切换成日常模式。
 
-## Decisions
+## 已确认决策
 
-- Blog owner nickname: `Feather`.
-- Default mode: technical blog.
-- Hidden daily mode trigger: click the visible nickname `Feather` five times in the current page session.
-- Daily mode persistence: none. Refreshing the page returns to technical mode.
-- Content source: lightweight Markdown files plus a small JSON index.
-- Existing tools remain available through a tools entry instead of being removed.
-- Existing dark/light theme toggle remains available.
+- 博客昵称使用 `Feather`。
+- 默认模式是技术博客。
+- 日常模式隐藏触发条件：在当前页面会话中连续点击可见昵称 `Feather` 五次。
+- 日常模式不持久化；刷新页面后恢复技术博客。
+- 内容来源采用轻量 Markdown 文件加一个 JSON 索引。
+- 现有工具页不删除，改为通过“工具”入口访问。
+- 现有深色/浅色主题切换继续保留。
 
-## User Experience
+## 用户体验
 
-The home page becomes the main blog surface. It should show:
+首页变成博客主界面，包含以下区域：
 
-- A header with the nickname `Feather`, navigation, and the existing theme toggle.
-- A short template introduction for the current mode.
-- A featured/latest article area.
-- A list of posts filtered by the current mode.
-- A tools area linking to `tester.html` and `performance.html`.
-- Template contact or profile links that can be replaced later.
+- 顶部区域：昵称 `Feather`、导航入口、现有主题切换按钮。
+- 当前模式简介：技术模式展示技术博客介绍；日常模式展示日常记录介绍。
+- 最新或推荐文章区域。
+- 按当前模式过滤后的文章列表。
+- 工具区域：链接到 `tester.html` 和 `performance.html`。
+- 个人资料或联系方式模板，后续再替换为真实内容。
 
-Technical mode uses clear technical-blog language and shows technical posts by default. Daily mode uses softer daily-life language and shows daily posts. The mode switch should feel like an Easter egg, not a visible primary control.
+技术模式使用清晰、偏技术博客的表达，默认展示技术文章。日常模式使用更松弛的日常语气，展示日常文章。模式切换应像一个彩蛋，而不是显眼的主功能按钮。
 
-## Hidden Mode Behavior
+## 隐藏模式行为
 
-The nickname element is clickable. The page tracks nickname clicks in memory:
+昵称元素可点击。页面只在内存中记录点击次数：
 
-1. Start in `tech` mode.
-2. Increment an in-memory counter whenever the nickname is clicked.
-3. On the fifth click, switch the page state to `daily`.
-4. Update page copy, post list, active labels, and any mode-specific empty states.
-5. Do not write this mode to `localStorage`, URL parameters, cookies, or any other persistent location.
-6. A browser refresh resets the page to `tech` mode.
+1. 页面加载后从 `tech` 模式开始。
+2. 每次点击昵称时，内存中的计数器加一。
+3. 第五次点击时，将页面状态切换为 `daily`。
+4. 更新页面文案、文章列表、标签和当前模式下的空状态提示。
+5. 不把日常模式写入 `localStorage`、URL 参数、Cookie 或任何其他持久化位置。
+6. 浏览器刷新后重新回到 `tech` 模式。
 
-Dark/light theme preference remains independent and may continue to use `localStorage`.
+深色/浅色主题偏好与博客内容模式彼此独立，可以继续使用 `localStorage` 保存。
 
-## Content Model
+## 内容模型
 
-Create a content index such as `content/posts.json`:
+创建一个内容索引，例如 `content/posts.json`：
 
 ```json
 [
@@ -58,82 +58,82 @@ Create a content index such as `content/posts.json`:
 ]
 ```
 
-Each Markdown post contains simple readable Markdown. The first implementation can support headings, paragraphs, lists, code blocks, links, and inline code. It does not need a full static-site generator.
+每篇文章使用简单 Markdown。第一版只需要支持标题、段落、列表、代码块、链接和行内代码，不需要完整静态站点生成器。
 
-Initial template posts:
+初始模板文章：
 
-- Tech: `第一篇技术笔记`, `一个项目复盘`, `学习记录模板`
-- Daily: `今天的碎片`, `一次散步记录`, `想法备忘录`
+- 技术：`第一篇技术笔记`、`一个项目复盘`、`学习记录模板`
+- 日常：`今天的碎片`、`一次散步记录`、`想法备忘录`
 
-## Architecture
+## 架构
 
-Keep the site static and GitHub Pages friendly:
+保持站点静态化，并兼容 GitHub Pages：
 
-- `index.html` hosts the blog shell and client-side rendering.
-- `content/posts.json` stores post metadata.
-- `content/posts/*.md` stores article bodies.
-- `assets/blog.js` handles loading content, filtering by mode, rendering lists, rendering article details, and hidden-mode switching.
-- `assets/styles.css` can hold shared blog styling if the implementation outgrows inline CSS.
+- `index.html` 承载博客外壳和客户端渲染入口。
+- `content/posts.json` 存放文章元数据。
+- `content/posts/*.md` 存放文章正文。
+- `assets/blog.js` 负责加载内容、按模式过滤、渲染文章列表、渲染文章详情和处理隐藏模式切换。
+- 如果样式从内联 CSS 膨胀，可以将通用博客样式放到 `assets/styles.css`。
 
-For the first version, routing can use hash URLs:
+第一版路由使用 hash：
 
-- `#/` for the blog home.
-- `#/post/<slug>` for an article.
+- `#/` 表示博客首页。
+- `#/post/<slug>` 表示文章详情页。
 
-Hash routing avoids GitHub Pages 404 problems and keeps deployment simple.
+Hash 路由可以避免 GitHub Pages 刷新详情页时出现 404，同时保持部署简单。
 
-## Data Flow
+## 数据流
 
-On page load:
+页面加载时：
 
-1. Apply saved dark/light theme preference.
-2. Set content mode to `tech`.
-3. Fetch `content/posts.json`.
-4. Render the home view with posts where `mode === "tech"`.
-5. If the hash points to a post, fetch and render that Markdown post.
+1. 应用已保存的深色/浅色主题偏好。
+2. 将内容模式设置为 `tech`。
+3. 请求 `content/posts.json`。
+4. 渲染 `mode === "tech"` 的首页文章列表。
+5. 如果当前 hash 指向某篇文章，则请求并渲染对应 Markdown。
 
-On hidden trigger:
+触发隐藏模式时：
 
-1. Set content mode to `daily` in memory.
-2. Re-render the current view using daily copy and daily posts.
-3. If the current post is not available in daily mode, return to the daily home view.
+1. 在内存中把内容模式设置为 `daily`。
+2. 使用日常模式文案和日常文章重新渲染当前视图。
+3. 如果当前文章不属于日常模式，则返回日常模式首页。
 
-## Error Handling
+## 错误处理
 
-- If `posts.json` fails to load, show a short friendly empty state.
-- If a Markdown file fails to load, show a missing-article message and a link back to the home view.
-- If a post slug is unknown, show a not-found state rather than a blank page.
-- If JavaScript is disabled, the page should still show static template content and links to tools.
+- 如果 `posts.json` 加载失败，展示简短友好的空状态。
+- 如果 Markdown 文件加载失败，展示文章缺失提示，并提供返回首页的入口。
+- 如果文章 slug 不存在，展示未找到状态，而不是空白页面。
+- 如果 JavaScript 被禁用，页面仍应展示静态模板内容和工具链接。
 
-## Testing
+## 测试
 
-Extend the existing Node-based tests to cover:
+扩展现有 Node 测试，覆盖以下行为：
 
-- Home page contains the blog shell and nickname `Feather`.
-- Home page still includes the theme toggle.
-- Content index contains both `tech` and `daily` posts.
-- Markdown template files referenced by `posts.json` exist.
-- Hidden trigger logic is present and uses five nickname clicks.
-- Daily mode is not persisted to `localStorage`.
-- Existing tool pages remain linked and their current tests continue passing.
+- 首页包含博客外壳和昵称 `Feather`。
+- 首页仍包含主题切换按钮。
+- 内容索引同时包含 `tech` 和 `daily` 文章。
+- `posts.json` 引用的 Markdown 模板文件都存在。
+- 隐藏触发逻辑存在，并使用五次昵称点击触发。
+- 日常模式不写入 `localStorage`。
+- 现有工具页仍有链接，并且现有测试继续通过。
 
-Manual browser verification should cover:
+手动浏览器验证覆盖：
 
-- Default load shows technical blog content.
-- Five clicks on `Feather` switch to daily content.
-- Refresh returns to technical content.
-- Dark/light theme still works.
-- Tool links still open.
+- 默认加载时显示技术博客内容。
+- 连续点击 `Feather` 五次后切换到日常内容。
+- 刷新后恢复技术博客内容。
+- 深色/浅色主题切换仍可用。
+- 工具链接仍可打开。
 
-## Out of Scope For First Version
+## 第一版不做的内容
 
-- Comments.
-- Search.
-- RSS.
-- Tags archive pages.
-- Admin editor.
-- Build tooling.
-- Full Markdown extension support.
-- Persisting daily mode.
+- 评论系统。
+- 搜索功能。
+- RSS。
+- 标签归档页。
+- 后台编辑器。
+- 构建工具。
+- 完整 Markdown 扩展语法支持。
+- 持久化日常模式。
 
-These can be added later after the blog structure is stable.
+这些能力可以等博客结构稳定后再逐步加入。
