@@ -27,17 +27,27 @@ html[data-theme="dark"] {
 }
 
 html[data-content-mode="daily"] {
-  --bg: #f3f7f1;
-  --panel-soft: #e8f3ec;
-  --accent: #0f766e;
-  --accent-dark: #0b5f59;
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-soft: #f7f7f5;
+  --text: #37352f;
+  --muted: #787774;
+  --line: #e9e9e7;
+  --accent: #37352f;
+  --accent-dark: #2f3437;
+  --shadow: none;
 }
 
 html[data-theme="dark"][data-content-mode="daily"] {
-  --bg: #141914;
-  --panel-soft: #202a22;
-  --accent: #7cc9b8;
-  --accent-dark: #a0dece;
+  --bg: #191919;
+  --panel: #191919;
+  --panel-soft: #242424;
+  --text: #e6e6e6;
+  --muted: #a8a8a8;
+  --line: #333333;
+  --accent: #e6e6e6;
+  --accent-dark: #ffffff;
+  --shadow: none;
 }
 
 * {
@@ -277,180 +287,187 @@ a {
   padding: 20px;
 }
 
-.adventure-dashboard {
-  display: grid;
-  gap: 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel);
-  padding: 22px;
-  box-shadow: var(--shadow);
+.notion-export-page {
+  max-width: 900px;
+  margin: 10px auto 0;
+  color: var(--text);
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Microsoft YaHei", sans-serif;
 }
 
-.adventure-top {
-  display: grid;
-  grid-template-columns: minmax(280px, 0.95fr) minmax(0, 1.25fr);
-  gap: 16px;
-}
-
-.adventurer-card,
-.adventure-panel,
-.attribute-card,
-.quest-card,
-.latest-log {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel-soft);
-}
-
-.adventurer-card {
-  display: grid;
-  grid-template-columns: 92px minmax(0, 1fr);
-  gap: 18px;
-  align-items: center;
-  padding: 18px;
-}
-
-.avatar-token {
-  display: grid;
-  width: 92px;
-  aspect-ratio: 1;
-  place-items: center;
-  border-radius: 8px;
-  background: #0f766e;
-  color: #ffffff;
-  font-size: 46px;
-  font-weight: 800;
-}
-
-.adventure-kicker {
-  margin: 0 0 8px;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
-.adventurer-card h2,
-.adventure-panel h2 {
-  margin: 0;
-  font-size: 26px;
+.notion-export-page h1 {
+  margin: 0 0 18px;
+  font-size: 40px;
   line-height: 1.2;
   letter-spacing: 0;
 }
 
-.profile-stats {
+.notion-export-page h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.notion-export-page blockquote {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin: 16px 0 0;
+  gap: 8px;
+  margin: 0;
+  border-left: 3px solid var(--text);
+  padding: 4px 0 4px 16px;
+  color: var(--text);
+  line-height: 1.65;
 }
 
-.profile-stats div {
-  min-width: 0;
-}
-
-.profile-stats dt {
+.notion-export-page blockquote span,
+.notion-note {
   color: var(--muted);
-  font-size: 12px;
 }
 
-.profile-stats dd {
-  margin: 3px 0 0;
+.notion-divider {
+  width: 100%;
+  height: 1px;
+  margin: 22px 0;
+  border: 0;
+  background: var(--line);
+}
+
+.notion-aside-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.notion-aside {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 12px;
+  align-content: start;
+  min-height: 190px;
+  border-radius: 3px;
+  background: var(--panel-soft);
+  padding: 16px;
+}
+
+.notion-aside-icon,
+.notion-page-icon {
+  line-height: 1.25;
+}
+
+.notion-profile {
+  display: grid;
+  gap: 7px;
+}
+
+.notion-profile strong {
+  font-size: 18px;
+}
+
+.notion-profile em {
+  color: var(--muted);
+}
+
+.notion-profile p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.notion-avatar {
+  display: grid;
+  width: 112px;
+  aspect-ratio: 251 / 290;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 42px;
   font-weight: 700;
 }
 
-.adventure-panel {
+.notion-property-list {
   display: grid;
+  gap: 8px;
+}
+
+.notion-property {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  align-content: start;
-  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  padding: 7px 0;
+  font-size: 14px;
 }
 
-.adventure-panel p {
-  margin: 0;
+.notion-property span {
+  min-width: 0;
   color: var(--muted);
-  line-height: 1.7;
 }
 
-.latest-log {
+.notion-property strong {
+  white-space: nowrap;
+}
+
+.notion-link-stack {
   display: grid;
-  gap: 6px;
-  padding: 14px;
+  gap: 2px;
+}
+
+.notion-page-link {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 42px;
+  border-radius: 3px;
+  padding: 4px 6px;
   color: var(--text);
   text-decoration: none;
 }
 
-.latest-log:hover {
-  border-color: var(--accent);
+.notion-page-link:hover,
+.notion-log-row:hover {
+  background: var(--panel-soft);
 }
 
-.latest-log span,
-.latest-log small {
-  color: var(--muted);
-}
-
-.attribute-grid,
-.quest-grid {
-  display: grid;
-  gap: 14px;
-}
-
-.attribute-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.attribute-card {
-  display: grid;
-  gap: 10px;
-  padding: 16px;
-}
-
-.attribute-card strong,
-.quest-card strong {
+.notion-page-link strong {
   display: block;
-  font-size: 18px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
 }
 
-.attribute-card span {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.attribute-value {
-  color: var(--accent);
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.stat-bar {
-  overflow: hidden;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--panel);
-}
-
-.stat-bar span {
+.notion-page-link small {
   display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--accent);
-}
-
-.quest-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.quest-card {
-  min-height: 126px;
-  padding: 16px;
-}
-
-.quest-card p {
-  margin: 8px 0 0;
+  margin-top: 2px;
   color: var(--muted);
-  line-height: 1.65;
+}
+
+.notion-database-preview {
+  display: grid;
+  gap: 8px;
+}
+
+.notion-log-table {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.notion-log-row {
+  display: grid;
+  grid-template-columns: 112px minmax(150px, 0.8fr) minmax(0, 1.2fr);
+  gap: 12px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 10px 6px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.notion-log-row span,
+.notion-log-row small {
+  color: var(--muted);
 }
 
 .tool-grid {
@@ -578,19 +595,21 @@ a {
 
   .post-list,
   .tool-grid,
-  .adventure-top,
-  .attribute-grid,
-  .quest-grid {
+  .notion-aside-grid {
     grid-template-columns: 1fr;
   }
 
-  .adventurer-card {
+  .notion-export-page h1 {
+    font-size: 34px;
+  }
+
+  .notion-log-row {
     grid-template-columns: 1fr;
+    gap: 4px;
   }
 
   .featured-card,
-  .article-view,
-  .adventure-dashboard {
+  .article-view {
     padding: 24px;
   }
 }

@@ -26,13 +26,14 @@
     { label: "财富", name: "Fortune", value: 36 },
   ];
 
-  const dailyPortals = [
-    { title: "每日签到", detail: "记录今天是否出现，以及一个最小行动。" },
-    { title: "每日复盘", detail: "写下今天的收获、消耗和下一步。" },
-    { title: "技能树", detail: "把正在练习的能力拆成可见节点。" },
-    { title: "任务表", detail: "收纳当前阶段的小任务和推进状态。" },
-    { title: "资产管理", detail: "预留给收入、支出和资源盘点。" },
-    { title: "愿望清单", detail: "先放想做的事，等合适的时候领取。" },
+  const dailyDatabaseLinks = [
+    { icon: "✅", title: "每日签到", detail: "Daily check-in" },
+    { icon: "📝", title: "每日复盘", detail: "Daily review" },
+    { icon: "🌱", title: "技能树", detail: "Skill tree" },
+    { icon: "🎯", title: "任务表", detail: "Quest board" },
+    { icon: "💰", title: "资产管理", detail: "Assets" },
+    { icon: "⭐", title: "愿望清单", detail: "Wishlist" },
+    { icon: "📌", title: "负债管理", detail: "Liabilities" },
   ];
 
   const $ = (id) => document.getElementById(id);
@@ -146,76 +147,124 @@
     `;
   }
 
-  function renderDailyDashboard(visiblePosts) {
+  function renderDailyDatabaseLink(item) {
+    return `
+      <a class="notion-page-link" href="#/" aria-label="${escapeHtml(item.title)}">
+        <span class="notion-page-icon" aria-hidden="true">${escapeHtml(item.icon)}</span>
+        <span>
+          <strong>${escapeHtml(item.title)}</strong>
+          <small>${escapeHtml(item.detail)}</small>
+        </span>
+      </a>
+    `;
+  }
+
+  function renderDailyExportPage(visiblePosts) {
     const attributes = dailyAttributes
       .map(
         (item) => `
-          <div class="attribute-card">
-            <div>
-              <strong>${escapeHtml(item.label)}</strong>
-              <span>${escapeHtml(item.name)}</span>
-            </div>
-            <div class="attribute-value">${item.value}</div>
-            <div class="stat-bar" aria-hidden="true">
-              <span style="width: ${item.value}%"></span>
-            </div>
+          <div class="notion-property">
+            <span>${escapeHtml(item.label)} ${escapeHtml(item.name)}</span>
+            <strong>${item.value}</strong>
           </div>
         `
       )
       .join("");
 
-    const portals = dailyPortals
-      .map(
-        (item) => `
-          <article class="quest-card">
-            <strong>${escapeHtml(item.title)}</strong>
-            <p>${escapeHtml(item.detail)}</p>
-          </article>
-        `
-      )
-      .join("");
-
-    const latestLog = visiblePosts[0]
-      ? `
-        <a class="latest-log" href="#/post/${encodeURIComponent(visiblePosts[0].slug)}">
-          <span>最新冒险日志</span>
-          <strong>${escapeHtml(visiblePosts[0].title)}</strong>
-          <small>${escapeHtml(visiblePosts[0].summary)}</small>
-        </a>
-      `
+    const logs = visiblePosts.length
+      ? visiblePosts
+          .map(
+            (post) => `
+              <a class="notion-log-row" href="#/post/${encodeURIComponent(post.slug)}">
+                <span>${escapeHtml(post.date)}</span>
+                <strong>${escapeHtml(post.title)}</strong>
+                <small>${escapeHtml(post.summary)}</small>
+              </a>
+            `
+          )
+          .join("")
       : '<p class="status">冒险日志模板还在整理中。</p>';
 
     return `
-      <section class="adventure-dashboard" aria-label="人生冒险日记">
-        <div class="adventure-top">
-          <div class="adventurer-card">
-            <div class="avatar-token" aria-hidden="true">F</div>
-            <div>
-              <p class="adventure-kicker">Adventurer Profile</p>
-              <h2>Feather</h2>
-              <dl class="profile-stats">
-                <div><dt>职业</dt><dd>Developer</dd></div>
-                <div><dt>等级</dt><dd>Lv.1</dd></div>
-                <div><dt>称号</dt><dd>编程游侠</dd></div>
-                <div><dt>状态</dt><dd>Normal</dd></div>
-              </dl>
+      <section class="notion-export-page" aria-label="人生冒险日记">
+        <h1>人生冒险日记</h1>
+        <blockquote>
+          <strong>欢迎来到你的人生游戏系统</strong>
+          <span>在这里，每一个行动都在塑造角色。完成任务，提升属性，成为更强大的自己。</span>
+        </blockquote>
+
+        <hr class="notion-divider">
+
+        <div class="notion-aside-grid">
+          <aside class="notion-aside">
+            <div class="notion-aside-icon" aria-hidden="true">🧑‍💻</div>
+            <div class="notion-profile">
+              <strong>Feather</strong>
+              <em>Developer</em>
+              <div class="notion-avatar" aria-hidden="true">F</div>
+              <p><b>总等级</b>: Lv.1</p>
+              <p><b>称号</b>: 『编码游侠』</p>
             </div>
-          </div>
-          <div class="adventure-panel">
-            <p class="adventure-kicker">System Message</p>
-            <h2>欢迎来到你的人生游戏系统</h2>
-            <p>这里不会发布模板里的真实记录，只保留仪表盘结构。你之后可以把签到、复盘、任务和愿望逐步替换成自己的内容。</p>
-            ${latestLog}
-          </div>
+          </aside>
+
+          <aside class="notion-aside">
+            <div class="notion-aside-icon" aria-hidden="true">⚡</div>
+            <h2>核心属性</h2>
+            <div class="notion-property-list">
+              ${attributes}
+            </div>
+          </aside>
+
+          <aside class="notion-aside">
+            <div class="notion-aside-icon" aria-hidden="true">📊</div>
+            <h2>统计数据</h2>
+            <div class="notion-property-list">
+              <div class="notion-property"><span>任务汇总</span><strong>模板</strong></div>
+              <div class="notion-property"><span>当前状态</span><strong>正常</strong></div>
+            </div>
+            <hr class="notion-divider">
+            <p class="notion-note">这里只模拟导出页结构，不发布模板里的真实统计。</p>
+          </aside>
         </div>
 
-        <div class="attribute-grid">
-          ${attributes}
+        <hr class="notion-divider">
+
+        <div class="notion-link-stack">
+          ${dailyDatabaseLinks.slice(0, 2).map(renderDailyDatabaseLink).join("")}
         </div>
 
-        <div class="quest-grid">
-          ${portals}
+        <hr class="notion-divider">
+
+        <div class="notion-link-stack">
+          ${dailyDatabaseLinks.slice(2, 3).map(renderDailyDatabaseLink).join("")}
         </div>
+
+        <hr class="notion-divider">
+
+        <div class="notion-link-stack">
+          ${dailyDatabaseLinks.slice(3, 4).map(renderDailyDatabaseLink).join("")}
+        </div>
+
+        <hr class="notion-divider">
+
+        <div class="notion-link-stack">
+          ${dailyDatabaseLinks.slice(4, 6).map(renderDailyDatabaseLink).join("")}
+        </div>
+
+        <hr class="notion-divider">
+
+        <div class="notion-link-stack">
+          ${dailyDatabaseLinks.slice(6).map(renderDailyDatabaseLink).join("")}
+        </div>
+
+        <hr class="notion-divider">
+
+        <section class="notion-database-preview" aria-label="冒险日志">
+          <h2>冒险日志</h2>
+          <div class="notion-log-table">
+            ${logs}
+          </div>
+        </section>
       </section>
     `;
   }
@@ -259,7 +308,7 @@
     }
     if (featuredPost) {
       featuredPost.innerHTML =
-        currentMode === "daily" ? renderDailyDashboard(visiblePosts) : visiblePosts[0] ? postCard(visiblePosts[0], true) : "";
+        currentMode === "daily" ? renderDailyExportPage(visiblePosts) : visiblePosts[0] ? postCard(visiblePosts[0], true) : "";
     }
     if (postList) {
       const listedPosts = currentMode === "daily" ? visiblePosts : visiblePosts.slice(1);

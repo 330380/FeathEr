@@ -29,7 +29,11 @@ assert(blogScript.includes("DAILY_TRIGGER_COUNT = 5"), "daily mode must trigger 
 assert(blogScript.includes('currentMode = "tech"'), "blog must default to tech mode");
 assert(!blogScript.includes('localStorage.setItem("feather-mode"'), "daily mode must not be persisted");
 assert(!blogScript.includes("localStorage.setItem('feather-mode'"), "daily mode must not be persisted");
-assert(blogScript.includes("renderDailyDashboard"), "daily mode must render the adventure diary dashboard");
+assert(blogScript.includes("renderDailyExportPage"), "daily mode must render the Notion-style exported page");
+assert(blogScript.includes("renderDailyDatabaseLink"), "daily database links must render from array items safely");
+assert(blogScript.includes("notion-export-page"), "daily mode must use the exported page wrapper");
+assert(blogScript.includes("notion-aside"), "daily mode must use Notion-style aside blocks");
+assert(blogScript.includes("notion-page-link"), "daily mode must use Notion-style database links");
 assert(blogScript.includes("人生冒险日记"), "daily mode must use the adventure diary structure");
 assert(blogScript.includes("每日签到"), "daily mode must include the daily check-in portal");
 assert(blogScript.includes("每日复盘"), "daily mode must include the daily review portal");
@@ -42,7 +46,11 @@ assert(!blogScript.includes("MyMaoXian"), "published script must not reference t
 assert(!blogScript.includes(".csv"), "published script must not reference exported CSV data");
 assert(!blogScript.includes("Little Perilla"), "published script must not include real template profile data");
 assert(!blogScript.includes("小紫苏"), "published script must not include real template profile data");
-assert(styles.includes(".adventure-dashboard"), "daily mode stylesheet must include the dashboard layout");
-assert(styles.includes(".quest-grid"), "daily mode stylesheet must include the quest portal grid");
+assert(!blogScript.includes("adventure-dashboard"), "daily mode must not use the previous dashboard structure");
+assert(styles.includes(".notion-export-page"), "daily mode stylesheet must include the exported page layout");
+assert(styles.includes(".notion-aside"), "daily mode stylesheet must include Notion-style aside blocks");
+assert(styles.includes(".notion-page-link"), "daily mode stylesheet must include Notion-style page links");
+assert(!styles.includes(".adventure-dashboard"), "daily mode stylesheet must not keep the previous dashboard layout");
+assert(!styles.includes(".quest-grid"), "daily mode stylesheet must not keep the previous quest grid");
 
 console.log("blog content checks passed");
