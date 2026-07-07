@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,6 +16,17 @@
         --accent-dark: #1d4ed8;
       }
 
+      html[data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #121826;
+        --panel: #1d2638;
+        --text: #eef2f7;
+        --muted: #b5c0d0;
+        --line: #344054;
+        --accent: #7c9cff;
+        --accent-dark: #9bb4ff;
+      }
+
       * {
         box-sizing: border-box;
       }
@@ -28,6 +39,37 @@
         background: var(--bg);
         color: var(--text);
         font-family: Arial, "Microsoft YaHei", sans-serif;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 10;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+        box-shadow: 0 10px 28px rgba(23, 32, 51, 0.12);
+      }
+
+      .theme-toggle:hover {
+        border-color: var(--accent);
+      }
+
+      .theme-icon {
+        width: 18px;
+        text-align: center;
       }
 
       main {
@@ -75,9 +117,52 @@
       a:hover {
         background: var(--accent-dark);
       }
+
+      @media (max-width: 520px) {
+        body {
+          align-items: start;
+          padding-top: 76px;
+        }
+
+        .theme-toggle {
+          top: 12px;
+          right: 12px;
+        }
+
+        main {
+          padding: 32px 24px;
+        }
+      }
     </style>
+    <script>
+      const THEME_STORAGE_KEY = "feather-theme";
+
+      const getStoredTheme = () => {
+        try {
+          return localStorage.getItem(THEME_STORAGE_KEY);
+        } catch (_) {
+          return "";
+        }
+      };
+
+      const getPreferredTheme = () => {
+        const storedTheme = getStoredTheme();
+        if (storedTheme === "dark" || storedTheme === "light") return storedTheme;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      };
+
+      const applyTheme = (theme) => {
+        document.documentElement.dataset.theme = theme;
+      };
+
+      applyTheme(getPreferredTheme());
+    </script>
   </head>
   <body>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+      <span id="theme-toggle-icon" class="theme-icon" aria-hidden="true">☾</span>
+      <span id="theme-toggle-label">Dark</span>
+    </button>
     <main>
       <h1>FeathEr</h1>
       <p>一个轻量的在线工具集合。当前提供接口测试与小规模性能观察能力，可填写 URL、Headers 和 Body，查看响应内容与基础性能指标。</p>
@@ -86,5 +171,32 @@
         <a href="performance.html">轻量性能测试</a>
       </div>
     </main>
+    <script>
+      const themeToggle = document.getElementById("theme-toggle");
+      const themeToggleIcon = document.getElementById("theme-toggle-icon");
+      const themeToggleLabel = document.getElementById("theme-toggle-label");
+
+      const syncThemeToggle = () => {
+        const isDark = document.documentElement.dataset.theme === "dark";
+        themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+        themeToggle.setAttribute("aria-pressed", String(isDark));
+        themeToggleIcon.textContent = isDark ? "☀" : "☾";
+        themeToggleLabel.textContent = isDark ? "Light" : "Dark";
+      };
+
+      themeToggle.addEventListener("click", () => {
+        const currentTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+        const nextTheme = currentTheme === "dark" ? "light" : "dark";
+        applyTheme(nextTheme);
+        try {
+          localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+        } catch (_) {
+          // Theme switching should still work when storage is unavailable.
+        }
+        syncThemeToggle();
+      });
+
+      syncThemeToggle();
+    </script>
   </body>
 </html>
